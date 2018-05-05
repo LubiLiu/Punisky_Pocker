@@ -1,0 +1,36 @@
+[2018-05-05 04:09:11.401] [INFO] pomelo-admin - [32m[MqttServer] [39m[MqttServer] listen on 3005
+[2018-05-05 04:09:11.409] [INFO] pomelo-admin - [32m[ConsoleService] [39mtry to connect master: "master", "127.0.0.1", 3005
+[2018-05-05 04:09:11.667] [INFO] pomelo-admin - [32m[ConsoleService] [39mtry to connect master: "connector", "127.0.0.1", 3005
+[2018-05-05 04:10:36.003] [INFO] pomelo-admin - [32m[MqttServer] [39m[MqttServer] listen on 3005
+[2018-05-05 04:10:36.012] [INFO] pomelo-admin - [32m[ConsoleService] [39mtry to connect master: "master", "127.0.0.1", 3005
+[2018-05-05 04:10:36.599] [INFO] pomelo-admin - [32m[ConsoleService] [39mtry to connect master: "gate", "127.0.0.1", 3005
+[2018-05-05 04:10:36.915] [ERROR] pomelo-admin - [31m[MonitorAgent] [39mserver "gate-server-1" "gate" register master failed
+[2018-05-05 04:10:36.918] [ERROR] pomelo-admin - [31m[MqttClient] [39mmqtt socket is disconnect, remote server host: 127.0.0.1, port: 3005
+[2018-05-05 04:10:37.937] [INFO] pomelo-admin - [32m[MqttClient] [39mreconnect delay 1 s
+[2018-05-05 04:10:38.003] [DEBUG] pomelo-admin - [36m[MasterSocket] [39mrepush qos message {"1":{"moduleId":"__monitorwatcher__","msg":{"action":"replaceServer","servers":{"gate-server-1":{"main":"/home/franky/WorkSpace/Punisky_Pocker/server/game-server/app.js","env":"development","id":"gate-server-1","host":"192.168.28.131","clientPort":3101,"frontend":"true","serverType":"gate"}}}}}
+[2018-05-05 04:10:38.126] [WARN] pomelo-admin - [33m[MasterSocket] [39munknown resp id:1
+[2018-05-05 04:24:13.048] [INFO] pomelo-admin - [32m[MqttServer] [39m[MqttServer] listen on 3005
+[2018-05-05 04:24:13.060] [INFO] pomelo-admin - [32m[ConsoleService] [39mtry to connect master: "master", "127.0.0.1", 3005
+[2018-05-05 04:24:13.304] [INFO] pomelo-admin - [32m[ConsoleService] [39mtry to connect master: "gate", "127.0.0.1", 3005
+[2018-05-05 04:24:13.460] [ERROR] pomelo-admin - [31m[MonitorAgent] [39mserver "gate-server-1" "gate" register master failed
+[2018-05-05 04:24:13.461] [ERROR] pomelo-admin - [31m[MqttClient] [39mmqtt socket is disconnect, remote server host: 127.0.0.1, port: 3005
+[2018-05-05 04:24:13.442] [INFO] pomelo-admin - [32m[ConsoleService] [39mtry to connect master: "connector", "127.0.0.1", 3005
+[2018-05-05 04:24:14.465] [INFO] pomelo-admin - [32m[MqttClient] [39mreconnect delay 1 s
+[2018-05-05 04:24:14.527] [DEBUG] pomelo-admin - [36m[MasterSocket] [39mrepush qos message {"2":{"moduleId":"__monitorwatcher__","msg":{"action":"replaceServer","servers":{"connector-server-1":{"main":"/home/franky/WorkSpace/Punisky_Pocker/server/game-server/app.js","env":"development","id":"connector-server-1","host":"192.168.28.131","port":3150,"clientHost":"192.168.28.131","clientPort":3010,"frontend":"true","serverType":"connector","pid":6197},"gate-server-1":{"main":"/home/franky/WorkSpace/Punisky_Pocker/server/game-server/app.js","env":"development","id":"gate-server-1","host":"192.168.28.131","clientPort":3101,"frontend":"true","serverType":"gate"}}}}}
+[2018-05-05 04:24:14.629] [WARN] pomelo-admin - [33m[MasterSocket] [39munknown resp id:2
+[2018-05-05 04:24:35.745] [INFO] pomelo-admin - [32m[MasterAgent] [39mclient user : admin login to master
+[2018-05-05 04:24:35.969] [DEBUG] pomelo-admin - [36m[MasterSocket] [39mdisconnect pomelo_list_1525519475649 client "client"
+[2018-05-05 04:24:35.974] [INFO] pomelo-admin - [32m[MasterSocket] [39mclient user admin exit
+[2018-05-05 04:30:59.624] [INFO] pomelo-admin - [32m[MqttServer] [39m[MqttServer] listen on 3005
+[2018-05-05 04:30:59.639] [INFO] pomelo-admin - [32m[ConsoleService] [39mtry to connect master: "master", "127.0.0.1", 3005
+[2018-05-05 04:30:59.896] [INFO] pomelo-admin - [32m[ConsoleService] [39mtry to connect master: "connector", "127.0.0.1", 3005
+[2018-05-05 04:30:59.952] [INFO] pomelo-admin - [32m[ConsoleService] [39mtry to connect master: "gate", "127.0.0.1", 3005
+[2018-05-05 04:31:00.101] [ERROR] pomelo-admin - [31m[MonitorAgent] [39mserver "gate-server-1" "gate" register master failed
+[2018-05-05 04:31:00.102] [ERROR] pomelo-admin - [31m[MqttClient] [39mmqtt socket is disconnect, remote server host: 127.0.0.1, port: 3005
+[2018-05-05 04:31:01.105] [INFO] pomelo-admin - [32m[MqttClient] [39mreconnect delay 1 s
+[2018-05-05 04:31:01.170] [DEBUG] pomelo-admin - [36m[MasterSocket] [39mrepush qos message {"2":{"moduleId":"__monitorwatcher__","msg":{"action":"replaceServer","servers":{"connector-server-1":{"main":"/home/franky/WorkSpace/Punisky_Pocker/server/game-server/app.js","env":"development","id":"connector-server-1","host":"192.168.28.131","port":3150,"clientHost":"192.168.28.131","clientPort":3010,"frontend":"true","serverType":"connector","pid":6968},"gate-server-1":{"main":"/home/franky/WorkSpace/Punisky_Pocker/server/game-server/app.js","env":"development","id":"gate-server-1","host":"192.168.28.131","clientPort":3101,"frontend":"true","serverType":"gate"}}}}}
+[2018-05-05 04:31:01.265] [WARN] pomelo-admin - [33m[MasterSocket] [39munknown resp id:2
+[2018-05-05 04:33:39.675] [INFO] pomelo-admin - [32m[MqttServer] [39m[MqttServer] listen on 3005
+[2018-05-05 04:33:39.686] [INFO] pomelo-admin - [32m[ConsoleService] [39mtry to connect master: "master", "127.0.0.1", 3005
+[2018-05-05 04:33:39.980] [INFO] pomelo-admin - [32m[ConsoleService] [39mtry to connect master: "gate", "127.0.0.1", 3005
+[2018-05-05 04:33:39.998] [INFO] pomelo-admin - [32m[ConsoleService] [39mtry to connect master: "connector", "127.0.0.1", 3005

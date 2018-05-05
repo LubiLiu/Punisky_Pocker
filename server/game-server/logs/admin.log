@@ -1,0 +1,1 @@
+[2018-05-05 04:24:35.833] [INFO] admin-log - [32m[/home/franky/WorkSpace/Punisky_Pocker/server/game-server/node_modules/pomelo/lib/master/master.js] [39m{"action":"execute","moduleId":"__console__","method":"clientHandler","msg":{"signal":"list","clientId":"pomelo_list_1525519475649","username":"admin"}}
