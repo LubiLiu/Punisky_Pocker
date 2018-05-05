@@ -3,7 +3,7 @@
     "gate": [
       {
         "id": "gate-server-1",
-        "host": "192.168.28.131",
+        "host": "127.0.0.1",
         "clientPort": 3101,
         "frontend": true
       }
@@ -11,9 +11,9 @@
     "connector": [
       {
         "id": "connector-server-1",
-        "host": "192.168.28.131",
+        "host": "127.0.0.1",
         "port": 3150,
-        "clientHost": "192.168.28.131",
+        "clientHost": "127.0.0.1",
         "clientPort": 3010,
         "frontend": true
       }
@@ -23,7 +23,7 @@
     "gate": [
       {
         "id": "gate-server-1",
-        "host": "192.168.28.131",
+        "host": "127.0.0.1",
         "clientPort": 3101,
         "frontend": true
       }
@@ -31,9 +31,9 @@
     "connector": [
       {
         "id": "connector-server-1",
-        "host": "192.168.28.131",
+        "host": "127.0.0.1",
         "port": 3150,
-        "clientHost": "192.168.28.131",
+        "clientHost": "127.0.0.1",
         "clientPort": 3010,
         "frontend": true
       }
