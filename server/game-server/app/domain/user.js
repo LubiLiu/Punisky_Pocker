@@ -1,7 +1,7 @@
 /**
  *Module dependencies
  */
-var logger = require('../lib/logger').getLogger(__filename);
+var logger = require('pomelo-logger').getLogger(__filename);
 /**
  * Initialize a new 'User' with the given 'opts'.
  *

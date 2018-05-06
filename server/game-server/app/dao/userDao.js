@@ -1,11 +1,12 @@
-var logger = require('../lib/logger').getLogger(__filename);
+var logger = require('pomelo-logger').getLogger(__filename);
 var async = require('async');
 var knex = require('knex');
 var moment = require('moment');
 
 var User = require('../domain/user');
-var define = require('../../../shared/define');
-var utils = require('../util/utils');
+var define = require('../..//util/define');
+var utils = require('../../util/utils');
+var retCode = require('../../util/retcode');
 
 var userDao = module.exports;
 
@@ -204,7 +205,7 @@ userDao.createUserByPhone = function (phone, password, name, cb) {
 	let sql = knex('User').insert({ name: name, phone: phone, password: password }).toString();
 	pomelo.app.get('dbclient').insert(sql, function (err, res) {
 		if (err !== null) {
-			utils.invokeCallback(cb, { code: err.number, error: err.message }, null);
+			utils.invokeCallback(cb, { code: retCode.FAIL, error: err.message }, null);
 		} else {
 			var user = new User({ id: res.insertId, name: name, head: '', phone: phone, password: password, logintime: moment().unix() });
 			utils.invokeCallback(cb, null, user);
@@ -222,12 +223,12 @@ userDao.createUserByThirdPart = function (method, openid, cb) {
 	let sql = knex('User').insert({}).toString();
 	pomelo.app.get('dbclient').insert(sql, function (err, res) {
 		if (err !== null) {
-			utils.invokeCallback(cb, { code: err.number, error: err.message }, null);
+			utils.invokeCallback(cb, { code: retCode.FAIL, error: err.message }, null);
 		} else {
 			var user = new User({ id: res.insertId, name: '', head: '', phone: '', password: '', logintime: moment().unix() });
 			userDao.createUserThirdPart(res.insertId, method, openid, function (err) {
 				if (err !== null) {
-					utils.invokeCallback(cb, { code: err.number, error: err.message }, null);
+					utils.invokeCallback(cb, { code: retCode.FAIL, error: err.message }, null);
 					//删除掉创建出来的user ，不成功也没什么太大关系
 					var sql = knex('User')
 						.where('id', res.insertId)
@@ -254,7 +255,7 @@ userDao.createUserThirdPart = function (userid, method, openid, cb) {
 	var sql = knex('ThirdPartUser').insert({ userid: userid, method: method, openid: openid }).toString();
 	pomelo.app.get('dbclient').insert(sql, function (err, res) {
 		if (err !== null) {
-			utils.invokeCallback(cb, { code: err.number, error: err.message });
+			utils.invokeCallback(cb, { code: retCode.FAIL, error: err.message });
 		} else {
 			utils.invokeCallback(cb, null);
 		}
@@ -274,7 +275,7 @@ userDao.checkPhoneExist = function (phone, cb) {
 	let sql = knex('User').count({ count: 'phone' }).where('phone', phone).toString();
 	pomelo.app.get('dbclient').query(sql, function (err, res) {
 		if (err !== null) {
-			utils.invokeCallback(cb, { code: err.number, error: err.message }, 0);
+			utils.invokeCallback(cb, { code: retCode.FAIL, error: err.message }, 0);
 		} else {
 			utils.invokeCallback(cb, null, res[0].count);
 		}
@@ -290,7 +291,7 @@ userDao.checkNameExist = function (name, cb) {
 	let sql = knex('User').count({ count: 'name' }).where('name', name).toString();
 	pomelo.app.get('dbclient').query(sql, function (err, res) {
 		if (err !== null) {
-			utils.invokeCallback(cb, { code: err.number, error: err.message }, 0);
+			utils.invokeCallback(cb, { code: retCode.FAIL, error: err.message }, 0);
 		} else {
 			utils.invokeCallback(cb, null, res[0].count);
 		}
@@ -307,7 +308,7 @@ userDao.checkThirdPartExist = function (method, openId, cb) {
 	let sql = knex('ThirdPartUser').count({ count: 'userid' }).where('method', method).andWhere('openid', openId).toString();
 	pomelo.app.get('dbclient').query(sql, function (err, res) {
 		if (err !== null) {
-			utils.invokeCallback(cb, { code: err.number, error: err.message }, 0);
+			utils.invokeCallback(cb, { code: retCode.FAIL, error: err.message }, 0);
 		} else {
 			utils.invokeCallback(cb, null, res[0].count);
 		}

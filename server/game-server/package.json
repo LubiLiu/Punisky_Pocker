@@ -3,6 +3,11 @@
     "version": "0.0.1",
     "private": false,
     "dependencies": {
-        "pomelo": "2.2.5"
+        "generic-pool": "^3.4.2",
+        "knex": "^0.14.6",
+        "moment": "^2.22.1",
+        "mysql": "^2.15.0",
+        "pomelo": "2.2.5",
+        "sqlite3": "^4.0.0"
     }
 }
