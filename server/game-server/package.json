@@ -3,6 +3,7 @@
     "version": "0.0.1",
     "private": false,
     "dependencies": {
+        "crypto": "^1.0.1",
         "generic-pool": "^3.4.2",
         "knex": "^0.14.6",
         "moment": "^2.22.1",

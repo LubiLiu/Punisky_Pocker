@@ -7,8 +7,8 @@ CREATE TABLE `User` (
   `head` VARCHAR(256) NOT NULL DEFAULT '' COMMENT '用户头像url',
   `phone` VARCHAR(11) NOT NULL DEFAULT '' COMMENT '手机号码',
   `password` VARCHAR(60) DEFAULT NULL COMMENT '用户密码',
-  `token` VARCHAR(128) DEFAULT '' COMMENT '验证token',
-  `logintime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '登陆时间',
+  `token` VARCHAR(512) DEFAULT '' COMMENT '验证token',
+  `logintime` bigint(20) unsigned DEFAULT '0' COMMENT '登陆时间',
   `createtime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`),
   UNIQUE  KEY (`phone`)

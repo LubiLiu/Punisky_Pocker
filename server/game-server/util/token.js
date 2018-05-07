@@ -16,7 +16,7 @@ var Token = {
 
         //添加签名，防篡改
         var secret = Define.CONST_DEFINE.TOKEN_SECRET;
-        var hash = crypto.createHmac('sha256', secret);
+        var hash = Crypto.createHmac('sha256', secret);
         hash.update(base64Str);
         var signature = hash.digest('base64');
         return base64Str + '.' + signature;
@@ -39,7 +39,7 @@ var Token = {
 
         //检验签名
         var secret = Define.CONST_DEFINE.TOKEN_SECRET;
-        var hash = crypto.createHmac('sha256', secret);
+        var hash = Crypto.createHmac('sha256', secret);
         hash.update(decArr[0]);
         var checkSignature = hash.digest('base64');
 

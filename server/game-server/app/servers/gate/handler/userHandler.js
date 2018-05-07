@@ -69,7 +69,7 @@ Handler.prototype.registerByPhone = function (msg, session, next) {
                 if (count > 0) {
                     retMsg = { code: RetCode.USER.USER_EXIST, msg: '该用户已存在 : ' + msg.phone };
                 }
-                neanextxt(null);
+                anext(null);
             })
         },
         function (anext) {
@@ -110,19 +110,20 @@ Handler.prototype.registerByPhone = function (msg, session, next) {
         },
         function (anext) {
             if (retMsg != null) {
-                return anext(null);
+                return anext(null, null);
             }
             //都检查完了，可以创建了
             UserDao.createUserByPhone(msg.phone, msg.password, msg.name, function (err, user) {
                 anext(err, user);
             });
         },
-        function (anext, user) {
+        function (user, anext) {
             if (retMsg != null) {
                 return anext(null);
             }
             //顺便登录了
-            var token = Token.createToken(user);
+            let subUser = Util.subObject(user, ['id', 'name', 'head', 'phone']);
+            var token = Token.createToken(subUser);
             UserDao.updateToken(user.id, token, function (err) {
                 if (err != null) {
                     return anext(err);
@@ -171,15 +172,16 @@ Handler.prototype.loginByPhonePass = function (msg, session, next) {
                 if (user.password != msg.password) {
                     retMsg = { code: RetCode.USER.PASSWORD_ERROR, msg: '密码错误 : ' + msg.phone };
                 }
-                neanextxt(null, user);
+                anext(null, user);
             })
         },
-        function (anext, user) {
+        function (user, anext) {
             if (retMsg != null) {
                 return anext(null);
             }
             //生成个token给客户端
-            var token = Token.createToken(user);
+            let subUser = Util.subObject(user, ['id', 'name', 'head', 'phone']);
+            var token = Token.createToken(subUser);
             UserDao.updateToken(user.id, token, function (err) {
                 if (err != null) {
                     return anext(err);
@@ -207,7 +209,7 @@ Handler.prototype.loginByPhonePass = function (msg, session, next) {
  * @param {Object} session 
  * @param {Function} next
  */
-Handler.prototype.loginByPhonePass = function (msg, session, next) {
+Handler.prototype.loginByPhoneValidation = function (msg, session, next) {
     let lostParams = Util.checkParams(msg, ['phone', 'validation']);
     if (lostParams.length > 0) {
         next(null, { code: RetCode.INVALID_PARAM, msg: 'lost params : ' + Util.joinArray(lostParams) });
@@ -235,7 +237,7 @@ Handler.prototype.loginByPhonePass = function (msg, session, next) {
         },
         function (anext) {
             if (retMsg != null) {
-                return anext(null);
+                return anext(null, null);
             }
             //验证成功 把这个玩家加载出来看看
             UserDao.getUserByPhone(msg.phone, function (err, user) {
@@ -245,19 +247,16 @@ Handler.prototype.loginByPhonePass = function (msg, session, next) {
                 if (user == null) {
                     retMsg = { code: RetCode.USER.USER_NOT_EXIST, msg: '该用户不存在 : ' + msg.phone };
                 }
-                //看看密码对不对吧
-                if (user.password != msg.password) {
-                    retMsg = { code: RetCode.USER.PASSWORD_ERROR, msg: '密码错误 : ' + msg.phone };
-                }
-                neanextxt(null, user);
+                anext(null, user);
             })
         },
-        function (anext, user) {
+        function (user, anext) {
             if (retMsg != null) {
                 return anext(null);
             }
             //没啥问题 生成个token给客户端
-            var token = Token.createToken(user);
+            let subUser = Util.subObject(user, ['id', 'name', 'head', 'phone']);
+            var token = Token.createToken(subUser);
             UserDao.updateToken(user.id, token, function (err) {
                 if (err != null) {
                     return anext(err);

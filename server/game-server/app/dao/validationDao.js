@@ -16,11 +16,12 @@ var ValidationDao = module.exports;
  * @param {function} cb Callback function.
  */
 ValidationDao.getValidation = function (phone, type, cb) {
-    let sql = Knex.select('*')
+    let sql = Knex('Validation').select('*')
         .from('Validation')
         .where('phone', phone)
         .andWhere('type', type).toString();
 
+    console.log(sql);
     pomelo.app.get('dbclient').query(sql, function (err, res) {
         if (err) {
             Utils.invokeCallback(cb, err.message, null);
@@ -42,12 +43,12 @@ ValidationDao.getValidation = function (phone, type, cb) {
  * @param {function} cb Callback function.
  */
 ValidationDao.insertValidation = function (phone, type, code, cb) {
+    let cur = Moment().unix();
     ValidationDao.checkValidationExist(phone, type, function (err, count) {
         if (err !== null) {
-            console.log(err);
             Utils.invokeCallback(cb, { code: RetCode.FAIL, msg: err.message }, null);
         } else {
-            var validation = new Validation({ phone: phone, type: type, value: code, createTime: Moment().unix() });
+            var validation = new Validation({ phone: phone, type: type, value: code, createTime: cur });
             if (count > 0) {
                 ValidationDao.updateValidation(validation, function (err) {
                     if (err !== null) {
@@ -84,7 +85,6 @@ ValidationDao.updateValidation = function (validation, cb) {
         Utils.invokeCallback(cb, { code: 1, msg: 'validation is null' });
         return;
     }
-    console.log(validation);
     let sql = Knex('validation').into('validation').update({ value: validation.value, createTime: validation.createTime }).where({ 'phone': validation.phone, 'type': validation.type }).toString();
     console.log(sql);
     pomelo.app.get('dbclient').update(sql, function (err, res) {

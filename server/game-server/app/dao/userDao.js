@@ -1,4 +1,5 @@
 var Logger = require('pomelo-logger').getLogger(__filename);
+var pomelo = require('pomelo');
 var Async = require('async');
 var Knex = require('knex');
 var Moment = require('moment');
@@ -17,10 +18,10 @@ var UserDao = module.exports;
  * @param {function} cb Callback function.
  */
 UserDao.getUserById = function (uid, cb) {
-	let sql = Knex.select('*')
+	let sql = Knex('user').select('*')
 		.from('User')
 		.where('id', uid).toString();
-
+	console.log(sql);
 	pomelo.app.get('dbclient').query(sql, function (err, res) {
 		if (err) {
 			Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, null);
@@ -55,10 +56,10 @@ UserDao.getUserById = function (uid, cb) {
  * @param {function} cb Callback function.
  */
 UserDao.getUserByPhone = function (phone, cb) {
-	let sql = Knex.select('*')
+	let sql = Knex('user').select('*')
 		.from('User')
 		.where('phone', phone).toString();
-
+	console.log(sql);
 	pomelo.app.get('dbclient').query(sql, function (err, res) {
 		if (err) {
 			Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, null);
@@ -77,11 +78,11 @@ UserDao.getUserByPhone = function (phone, cb) {
  * @param {function} cb Callback function
  */
 UserDao.getUserByName = function (name, cb) {
-	let sql = Knex.select('*')
+	let sql = Knex('user').select('*')
 		.from('User')
 		.where('name', name).toString();
 
-
+	console.log(sql);
 	pomelo.app.get('dbclient').query(sql, function (err, res) {
 		if (err !== null) {
 			Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, null);
@@ -115,11 +116,11 @@ UserDao.getUserByName = function (name, cb) {
  * @param {function} cb
  */
 UserDao.getUserByThirdPart = function (method, openid, cb) {
-	let sql = Knex.select('*')
+	let sql = Knex('user').select('*')
 		.from('ThirdPartUser')
 		.where('method', method)
 		.andWhere('openid', openid).toString();
-
+	console.log(sql);
 	pomelo.app.get('dbclient').query(sql, function (err, res) {
 		if (err !== null) {
 			Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, null);
@@ -145,11 +146,11 @@ UserDao.getUserByThirdPart = function (method, openid, cb) {
  * @param {function} cb Callback function
  */
 UserDao.getThirdPartById = function (uid, cb) {
-	let sql = Knex.select('*')
+	let sql = Knex('user').select('*')
 		.from('ThirdPartUser')
 		.where('userid', uid).toString();
 
-
+	console.log(sql);
 	pomelo.app.get('dbclient').query(sql, function (err, res) {
 		if (err !== null) {
 			Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, null);
@@ -165,11 +166,11 @@ UserDao.getThirdPartById = function (uid, cb) {
  * @param {function} cb Callback function
  */
 UserDao.getCurrencyById = function (uid, cb) {
-	let sql = Knex.select('*')
+	let sql = Knex('user').select('*')
 		.from('Currency')
 		.where('userid', uid).toString();
 
-
+	console.log(sql);
 	pomelo.app.get('dbclient').query(sql, function (err, res) {
 		if (err !== null) {
 			Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, null);
@@ -225,12 +226,15 @@ UserDao.getUserOtherInfo = function (user, cb) {
  * @param {function} cb Call back function.
  */
 UserDao.createUserByPhone = function (phone, password, name, cb) {
-	let sql = Knex('User').insert({ name: name, phone: phone, password: password }).toString();
+	let sql = Knex('User').insert({ name: name, phone: phone, password: password }).into('user').toString();
+	console.log(sql);
 	pomelo.app.get('dbclient').insert(sql, function (err, res) {
 		if (err !== null) {
 			Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, null);
 		} else {
+			console.log(res);
 			var user = new User({ id: res.insertId, name: name, head: '', phone: phone, password: password, logintime: Moment().unix() });
+			console.log(user);
 			Utils.invokeCallback(cb, null, user);
 		}
 	});
@@ -244,6 +248,7 @@ UserDao.createUserByPhone = function (phone, password, name, cb) {
  */
 UserDao.createUserByThirdPart = function (method, openid, cb) {
 	let sql = Knex('User').insert({}).toString();
+	console.log(sql);
 	pomelo.app.get('dbclient').insert(sql, function (err, res) {
 		if (err !== null) {
 			Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, null);
@@ -276,6 +281,7 @@ UserDao.createUserByThirdPart = function (method, openid, cb) {
  */
 UserDao.createUserThirdPart = function (userid, method, openid, cb) {
 	var sql = Knex('ThirdPartUser').insert({ userid: userid, method: method, openid: openid }).toString();
+	console.log(sql);
 	pomelo.app.get('dbclient').insert(sql, function (err, res) {
 		if (err !== null) {
 			Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message });
@@ -288,7 +294,9 @@ UserDao.createUserThirdPart = function (userid, method, openid, cb) {
 
 //=============================================================  Update Function  =============================================================
 UserDao.updateToken = function (userid, token, cb) {
-	let sql = Knex('user').into('user').update({ token: token, logintime: Moment().unix() }).where({ 'id': userid }).toString();
+	console.log(token);
+	console.log(userid);
+	let sql = Knex('User').into('user').update({ token: token, logintime: Moment().unix() }).where({ 'id': userid }).toString();
 	console.log(sql);
 	pomelo.app.get('dbclient').update(sql, function (err, res) {
 		if (err !== null) {
@@ -305,7 +313,8 @@ UserDao.updateToken = function (userid, token, cb) {
  * @param {function} cb
  */
 UserDao.checkPhoneExist = function (phone, cb) {
-	let sql = Knex('User').count({ count: 'phone' }).where('phone', phone).toString();
+	let sql = Knex('User').count({ count: 'phone' }).from('user').where('phone', phone).toString();
+	console.log(sql);
 	pomelo.app.get('dbclient').query(sql, function (err, res) {
 		if (err !== null) {
 			Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, 0);
@@ -321,7 +330,8 @@ UserDao.checkPhoneExist = function (phone, cb) {
  * @param {function} cb
  */
 UserDao.checkNameExist = function (name, cb) {
-	let sql = Knex('User').count({ count: 'name' }).where('name', name).toString();
+	let sql = Knex('User').count({ count: 'name' }).from('user').where('name', name).toString();
+	console.log(sql);
 	pomelo.app.get('dbclient').query(sql, function (err, res) {
 		if (err !== null) {
 			Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, 0);
@@ -338,7 +348,7 @@ UserDao.checkNameExist = function (name, cb) {
  * @param {function} cb
  */
 UserDao.checkThirdPartExist = function (method, openId, cb) {
-	let sql = Knex('ThirdPartUser').count({ count: 'userid' }).where('method', method).andWhere('openid', openId).toString();
+	let sql = Knex('ThirdPartUser').count({ count: 'userid' }).from('user').where('method', method).andWhere('openid', openId).toString();
 	pomelo.app.get('dbclient').query(sql, function (err, res) {
 		if (err !== null) {
 			Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, 0);

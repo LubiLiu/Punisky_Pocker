@@ -159,5 +159,20 @@ utils.joinArray = function (params, delimiter) {
     }
     return ret;
 }
+
+/**
+ * 选取一个obj的一部分key组成另一个obj
+ * @function
+ * @param {Object} obj
+ * @param {Array}  keys
+ * @returns {Object} ret
+ */
+utils.subObject = function (obj, keys) {
+    var ret = {};
+    for (var i = 0; i < keys.length; i++) {
+        ret[keys[i]] = obj[keys[i]];
+    }
+    return ret;
+}
 // print the file name and the line number ~ end
 
