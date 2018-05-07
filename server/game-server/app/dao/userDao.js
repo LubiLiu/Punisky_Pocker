@@ -1,36 +1,36 @@
-var logger = require('pomelo-logger').getLogger(__filename);
-var async = require('async');
-var knex = require('knex');
-var moment = require('moment');
+var Logger = require('pomelo-logger').getLogger(__filename);
+var Async = require('async');
+var Knex = require('knex');
+var Moment = require('moment');
 
 var User = require('../domain/user');
-var define = require('../..//util/define');
-var utils = require('../../util/utils');
-var retCode = require('../../util/retcode');
+var Utils = require('../../util/utils');
+var RetCode = require('../../util/retcode');
 
-var userDao = module.exports;
+var UserDao = module.exports;
 
 //=============================================================  Get Function  =============================================================
 /**
+ * 做登录用，就把其他信息也都加载出来了
  * Get an user by userId
  * @param {Number} uid User Id.
  * @param {function} cb Callback function.
  */
-userDao.getUserById = function (uid, cb) {
-	let sql = knex.select('*')
+UserDao.getUserById = function (uid, cb) {
+	let sql = Knex.select('*')
 		.from('User')
 		.where('id', uid).toString();
 
 	pomelo.app.get('dbclient').query(sql, function (err, res) {
 		if (err) {
-			utils.invokeCallback(cb, err.message, null);
+			Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, null);
 		} else if (!res || res.length <= 0) {
-			utils.invokeCallback(cb, null, null);
+			Utils.invokeCallback(cb, null, null);
 		} else {
 			var user = new User(res[0]);
-			userDao.getUserOtherInfo(user, function (err, results) {
+			UserDao.getUserOtherInfo(user, function (err, results) {
 				if (err) {
-					utils.invokeCallback(cb, err.message, null);
+					Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, null);
 				} else {
 					var parts = results[0];
 					for (var i = 0; i < parts.length; i++) {
@@ -41,7 +41,7 @@ userDao.getUserById = function (uid, cb) {
 						user.setCurrency(currencys[i].type, currencys[i].value);
 					}
 				}
-				utils.invokeCallback(cb, null, user);
+				Utils.invokeCallback(cb, null, user);
 			});
 		}
 	});
@@ -49,26 +49,49 @@ userDao.getUserById = function (uid, cb) {
 
 
 /**
+ * 做登录用，只要把用户信息加载出来就好了
+ * Get an user by phone
+ * @param {String} phone phone
+ * @param {function} cb Callback function.
+ */
+UserDao.getUserByPhone = function (phone, cb) {
+	let sql = Knex.select('*')
+		.from('User')
+		.where('phone', phone).toString();
+
+	pomelo.app.get('dbclient').query(sql, function (err, res) {
+		if (err) {
+			Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, null);
+		} else if (!res || res.length <= 0) {
+			Utils.invokeCallback(cb, null, null);
+		} else {
+			var user = new User(res[0]);
+			Utils.invokeCallback(cb, null, user);
+		}
+	});
+};
+
+/**
  * get user by Name
  * @param {String} name User name
  * @param {function} cb Callback function
  */
-userDao.getUserByName = function (name, cb) {
-	let sql = knex.select('*')
+UserDao.getUserByName = function (name, cb) {
+	let sql = Knex.select('*')
 		.from('User')
 		.where('name', name).toString();
 
 
 	pomelo.app.get('dbclient').query(sql, function (err, res) {
 		if (err !== null) {
-			utils.invokeCallback(cb, err.message, null);
+			Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, null);
 		} else if (!res || res.length <= 0) {
-			utils.invokeCallback(cb, null, null);
+			Utils.invokeCallback(cb, null, null);
 		} else {
 			var user = new User(res[0]);
-			userDao.getUserOtherInfo(user, function (err, results) {
+			UserDao.getUserOtherInfo(user, function (err, results) {
 				if (err) {
-					utils.invokeCallback(cb, err.message, null);
+					Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, null);
 				} else {
 					var parts = results[0];
 					for (var i = 0; i < parts.length; i++) {
@@ -79,7 +102,7 @@ userDao.getUserByName = function (name, cb) {
 						user.setCurrency(currencys[i].type, currencys[i].value);
 					}
 				}
-				utils.invokeCallback(cb, null, user);
+				Utils.invokeCallback(cb, null, user);
 			});
 		}
 	});
@@ -91,24 +114,24 @@ userDao.getUserByName = function (name, cb) {
  * @param {String} openid
  * @param {function} cb
  */
-userDao.getUserByThirdPart = function (method, openid, cb) {
-	let sql = knex.select('*')
+UserDao.getUserByThirdPart = function (method, openid, cb) {
+	let sql = Knex.select('*')
 		.from('ThirdPartUser')
 		.where('method', method)
 		.andWhere('openid', openid).toString();
 
 	pomelo.app.get('dbclient').query(sql, function (err, res) {
 		if (err !== null) {
-			utils.invokeCallback(cb, err.message, null);
+			Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, null);
 		} else if (!res || res.length <= 0) {
-			utils.invokeCallback(cb, null, null);
+			Utils.invokeCallback(cb, null, null);
 		} else {
 			var part = res[0];
-			userDao.getUserById(part.userid, function (err, user) {
+			UserDao.getUserById(part.userid, function (err, user) {
 				if (err !== null) {
-					utils.invokeCallback(cb, err.message, null);
+					Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, null);
 				} else {
-					utils.invokeCallback(cb, null, user);
+					Utils.invokeCallback(cb, null, user);
 				}
 			});
 		}
@@ -121,17 +144,17 @@ userDao.getUserByThirdPart = function (method, openid, cb) {
  * @param {String} uid User id
  * @param {function} cb Callback function
  */
-userDao.getThirdPartById = function (uid, cb) {
-	let sql = knex.select('*')
+UserDao.getThirdPartById = function (uid, cb) {
+	let sql = Knex.select('*')
 		.from('ThirdPartUser')
 		.where('userid', uid).toString();
 
 
 	pomelo.app.get('dbclient').query(sql, function (err, res) {
 		if (err !== null) {
-			utils.invokeCallback(cb, err.message, null);
+			Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, null);
 		} else {
-			utils.invokeCallback(cb, null, res);
+			Utils.invokeCallback(cb, null, res);
 		}
 	});
 };
@@ -141,17 +164,17 @@ userDao.getThirdPartById = function (uid, cb) {
  * @param {String} uid User id
  * @param {function} cb Callback function
  */
-userDao.getCurrencyById = function (uid, cb) {
-	let sql = knex.select('*')
+UserDao.getCurrencyById = function (uid, cb) {
+	let sql = Knex.select('*')
 		.from('Currency')
 		.where('userid', uid).toString();
 
 
 	pomelo.app.get('dbclient').query(sql, function (err, res) {
 		if (err !== null) {
-			utils.invokeCallback(cb, err.message, null);
+			Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, null);
 		} else {
-			utils.invokeCallback(cb, null, res);
+			Utils.invokeCallback(cb, null, res);
 		}
 	});
 };
@@ -162,23 +185,23 @@ userDao.getCurrencyById = function (uid, cb) {
  * @param {function} cb
  */
 
-userDao.getUserOtherInfo = function (user, cb) {
+UserDao.getUserOtherInfo = function (user, cb) {
 	if (user == null || user.id == null) {
-		utils.invokeCallback(cb, 'user is null', []);
+		Utils.invokeCallback(cb, { code: RetCode.FAIL, error: 'user is null' }, []);
 	}
-	async.parallel([
+	Async.parallel([
 		function (callback) {
-			userDao.getThirdPartById(user.id, function (err, parts) {
+			UserDao.getThirdPartById(user.id, function (err, parts) {
 				if (!!err) {
-					logger.error('Get thirdpart for userDao failed! ' + err.stack);
+					Logger.error('Get thirdpart for UserDao failed! ' + err.stack);
 				}
 				callback(err, parts);
 			});
 		},
 		function (callback) {
-			userDao.getCurrencyById(user.id, function (err, currencys) {
+			UserDao.getCurrencyById(user.id, function (err, currencys) {
 				if (!!err) {
-					logger.error('Get currency for userDao failed! ' + err.stack);
+					Logger.error('Get currency for UserDao failed! ' + err.stack);
 				}
 				callback(err, currencys);
 			});
@@ -186,9 +209,9 @@ userDao.getUserOtherInfo = function (user, cb) {
 	],
 		function (err, results) {
 			if (!!err) {
-				utils.invokeCallback(cb, err);
+				Utils.invokeCallback(cb, err);
 			} else {
-				utils.invokeCallback(cb, null, results);
+				Utils.invokeCallback(cb, null, results);
 			}
 		});
 }
@@ -201,14 +224,14 @@ userDao.getUserOtherInfo = function (user, cb) {
  * @param {String} name
  * @param {function} cb Call back function.
  */
-userDao.createUserByPhone = function (phone, password, name, cb) {
-	let sql = knex('User').insert({ name: name, phone: phone, password: password }).toString();
+UserDao.createUserByPhone = function (phone, password, name, cb) {
+	let sql = Knex('User').insert({ name: name, phone: phone, password: password }).toString();
 	pomelo.app.get('dbclient').insert(sql, function (err, res) {
 		if (err !== null) {
-			utils.invokeCallback(cb, { code: retCode.FAIL, error: err.message }, null);
+			Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, null);
 		} else {
-			var user = new User({ id: res.insertId, name: name, head: '', phone: phone, password: password, logintime: moment().unix() });
-			utils.invokeCallback(cb, null, user);
+			var user = new User({ id: res.insertId, name: name, head: '', phone: phone, password: password, logintime: Moment().unix() });
+			Utils.invokeCallback(cb, null, user);
 		}
 	});
 };
@@ -219,25 +242,25 @@ userDao.createUserByPhone = function (phone, password, name, cb) {
  * @param {String} openid
  * @param {function} cb
  */
-userDao.createUserByThirdPart = function (method, openid, cb) {
-	let sql = knex('User').insert({}).toString();
+UserDao.createUserByThirdPart = function (method, openid, cb) {
+	let sql = Knex('User').insert({}).toString();
 	pomelo.app.get('dbclient').insert(sql, function (err, res) {
 		if (err !== null) {
-			utils.invokeCallback(cb, { code: retCode.FAIL, error: err.message }, null);
+			Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, null);
 		} else {
-			var user = new User({ id: res.insertId, name: '', head: '', phone: '', password: '', logintime: moment().unix() });
-			userDao.createUserThirdPart(res.insertId, method, openid, function (err) {
+			var user = new User({ id: res.insertId, name: '', head: '', phone: '', password: '', logintime: Moment().unix() });
+			UserDao.createUserThirdPart(res.insertId, method, openid, function (err) {
 				if (err !== null) {
-					utils.invokeCallback(cb, { code: retCode.FAIL, error: err.message }, null);
+					Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, null);
 					//删除掉创建出来的user ，不成功也没什么太大关系
-					var sql = knex('User')
+					var sql = Knex('User')
 						.where('id', res.insertId)
 						.del().toString();
 					pomelo.app.get('dbclient').delete(sql, function (err, res) { });
 					return;
 				}
 				user.setThirdPart(method, openid);
-				utils.invokeCallback(cb, null, user);
+				Utils.invokeCallback(cb, null, user);
 			})
 
 		}
@@ -251,33 +274,43 @@ userDao.createUserByThirdPart = function (method, openid, cb) {
  * @param {String} openid
  * @param {function} cb
  */
-userDao.createUserThirdPart = function (userid, method, openid, cb) {
-	var sql = knex('ThirdPartUser').insert({ userid: userid, method: method, openid: openid }).toString();
+UserDao.createUserThirdPart = function (userid, method, openid, cb) {
+	var sql = Knex('ThirdPartUser').insert({ userid: userid, method: method, openid: openid }).toString();
 	pomelo.app.get('dbclient').insert(sql, function (err, res) {
 		if (err !== null) {
-			utils.invokeCallback(cb, { code: retCode.FAIL, error: err.message });
+			Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message });
 		} else {
-			utils.invokeCallback(cb, null);
+			Utils.invokeCallback(cb, null);
 		}
 	});
 }
 
 
 //=============================================================  Update Function  =============================================================
-
+UserDao.updateToken = function (userid, token, cb) {
+	let sql = Knex('user').into('user').update({ token: token, logintime: Moment().unix() }).where({ 'id': userid }).toString();
+	console.log(sql);
+	pomelo.app.get('dbclient').update(sql, function (err, res) {
+		if (err !== null) {
+			Utils.invokeCallback(cb, { code: RetCode.FAIL, msg: err.message });
+		} else {
+			Utils.invokeCallback(cb, null);
+		}
+	});
+}
 //=============================================================  Check Function  =============================================================
 /**
  * Check user phone exist
  * @param {String} phone
  * @param {function} cb
  */
-userDao.checkPhoneExist = function (phone, cb) {
-	let sql = knex('User').count({ count: 'phone' }).where('phone', phone).toString();
+UserDao.checkPhoneExist = function (phone, cb) {
+	let sql = Knex('User').count({ count: 'phone' }).where('phone', phone).toString();
 	pomelo.app.get('dbclient').query(sql, function (err, res) {
 		if (err !== null) {
-			utils.invokeCallback(cb, { code: retCode.FAIL, error: err.message }, 0);
+			Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, 0);
 		} else {
-			utils.invokeCallback(cb, null, res[0].count);
+			Utils.invokeCallback(cb, null, res[0].count);
 		}
 	});
 }
@@ -287,13 +320,13 @@ userDao.checkPhoneExist = function (phone, cb) {
  * @param {String} name
  * @param {function} cb
  */
-userDao.checkNameExist = function (name, cb) {
-	let sql = knex('User').count({ count: 'name' }).where('name', name).toString();
+UserDao.checkNameExist = function (name, cb) {
+	let sql = Knex('User').count({ count: 'name' }).where('name', name).toString();
 	pomelo.app.get('dbclient').query(sql, function (err, res) {
 		if (err !== null) {
-			utils.invokeCallback(cb, { code: retCode.FAIL, error: err.message }, 0);
+			Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, 0);
 		} else {
-			utils.invokeCallback(cb, null, res[0].count);
+			Utils.invokeCallback(cb, null, res[0].count);
 		}
 	});
 }
@@ -304,13 +337,13 @@ userDao.checkNameExist = function (name, cb) {
  * @param {String} openId
  * @param {function} cb
  */
-userDao.checkThirdPartExist = function (method, openId, cb) {
-	let sql = knex('ThirdPartUser').count({ count: 'userid' }).where('method', method).andWhere('openid', openId).toString();
+UserDao.checkThirdPartExist = function (method, openId, cb) {
+	let sql = Knex('ThirdPartUser').count({ count: 'userid' }).where('method', method).andWhere('openid', openId).toString();
 	pomelo.app.get('dbclient').query(sql, function (err, res) {
 		if (err !== null) {
-			utils.invokeCallback(cb, { code: retCode.FAIL, error: err.message }, 0);
+			Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, 0);
 		} else {
-			utils.invokeCallback(cb, null, res[0].count);
+			Utils.invokeCallback(cb, null, res[0].count);
 		}
 	});
 }

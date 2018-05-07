@@ -16,6 +16,7 @@ var User = function (opts) {
 	this.phone = opts.phone;
 	this.password = opts.password;
 	this.logintime = opts.logintime;
+	this.token = opts.token;
 	this.thirdPart = {};
 	this.currency = {};
 };

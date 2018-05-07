@@ -1,4 +1,4 @@
-var Code = require('../../../../util/retcode');
+var RetCode = require('../../../../util/retcode');
 
 module.exports = function (app) {
 	return new Handler(app);
@@ -17,6 +17,6 @@ var Handler = function (app) {
  * @return {Void}
  */
 Handler.prototype.entry = function (msg, session, next) {
-	next(null, { code: Code.OK, msg: 'game server is ok.' });
+	next(null, { code: RetCode.OK, msg: 'game server is ok.' });
 };
 
