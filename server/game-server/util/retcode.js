@@ -12,6 +12,8 @@ module.exports = {
         VALIDATION_TIMEOUT: 2004,
         VALIDATION_ERROR: 2005,
         USER_NOT_EXIST: 2006,
-        PASSWORD_ERROR: 2007
+        PASSWORD_ERROR: 2007,
+        TOKEN_ERROR: 2008,
+        NEED_LOGIN: 2009,
     }
 };

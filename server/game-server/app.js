@@ -57,6 +57,10 @@ app.configure('production|development', 'gate', function () {
     });
 });
 
+app.configure('production|development', 'game', function () {
+
+})
+
 // start app
 app.start();
 

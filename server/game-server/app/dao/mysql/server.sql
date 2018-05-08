@@ -1,3 +1,4 @@
+# ------------------------------------------------用户数据相关------------------------------------------------
 # Dump of table User
 # ------------------------------------------------------------
 DROP TABLE IF EXISTS `User`;
@@ -43,3 +44,52 @@ CREATE TABLE `Validation` (
   UNIQUE KEY `UNIQUE_BINDING` (`phone`,`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='验证码表';
 
+
+# ------------------------------------------------游戏房间相关------------------------------------------------
+# Dump of table Room
+# ------------------------------------------------------------
+DROP TABLE IF EXISTS `Room`;
+CREATE TABLE `Room` (
+  `id` INT NOT NULL AUTO_INCREMENT COMMENT '房间id',
+  `type` INT NOT NULL COMMENT '房间类型',
+  `name` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '房间名称',
+  `invitecode` VARCHAR(8) NOT NULL DEFAULT '' COMMENT '邀请码',
+  `serverid` VARCHAR(32) NOT NULL DEFAULT '' COMMENT '服务器id',
+  `creatorid` INT NOT NULL COMMENT '创建者',
+  `creatorname` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '创建者名称',
+  `timeout` bigint(20) unsigned DEFAULT 0 COMMENT '过期时间',
+  `createTime` bigint(20) unsigned DEFAULT '0' COMMENT '生成时间',
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='房间表';
+
+# Dump of table TexasRule 得克萨斯的房间规则  #TODO
+# ------------------------------------------------------------
+DROP TABLE IF EXISTS `TexasRule`;
+CREATE TABLE `TexasRule` (
+  `id` INT NOT NULL AUTO_INCREMENT COMMENT '房间id',
+  `createTime` bigint(20) unsigned DEFAULT '0' COMMENT '生成时间',
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='得克萨斯的房间规则';
+
+# Dump of table TexasGamer 得克萨斯玩家信息  #TODO
+# ------------------------------------------------------------
+DROP TABLE IF EXISTS `TexasGamer`;
+CREATE TABLE `TexasGamer` (
+  `id` INT NOT NULL AUTO_INCREMENT COMMENT '房间id',
+  `uid` INT NOT NULL COMMENT '玩家id',
+  `createTime` bigint(20) unsigned DEFAULT '0' COMMENT '生成时间',
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='得克萨斯的房间规则';
+
+# Dump of table TexasTable 得克萨斯牌桌信息  #TODO
+# ------------------------------------------------------------
+DROP TABLE IF EXISTS `TexasTable`;
+CREATE TABLE `TexasTable` (
+  `id` INT NOT NULL AUTO_INCREMENT COMMENT '房间id',
+  `createTime` bigint(20) unsigned DEFAULT '0' COMMENT '生成时间',
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='得克萨斯的房间规则';
+
+# Dump of table TexasSite 得克萨斯座位信息  #TODO
+# ------------------------------------------------------------
+DROP TABLE IF EXISTS `TexasSite`;
+CREATE TABLE `TexasSite` (
+  `id` INT NOT NULL AUTO_INCREMENT COMMENT '房间id',
+  `createTime` bigint(20) unsigned DEFAULT '0' COMMENT '生成时间',
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='得克萨斯的房间规则';
