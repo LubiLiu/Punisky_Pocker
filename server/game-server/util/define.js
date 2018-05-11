@@ -2,6 +2,9 @@ module.exports = {
     SESSION_KEY: {
         GAME_SERVERID: 'gameServerId'
     },
+    COMPONENT_KEY: {
+        ROOM_MANAGER: 'roomManager'
+    },
     VALIDATION_TYPE: {
         REGISTE: 1,
         QUICK_LOGIN: 2
@@ -13,5 +16,6 @@ module.exports = {
         VALIDATION_TIMEOUT: 60,
         TOKEN_SECRET: 'PunishSky-Poker',
         TOKEN_TIMEOUT: 300,
+        INVITE_SIZE: 8,
     }
 };

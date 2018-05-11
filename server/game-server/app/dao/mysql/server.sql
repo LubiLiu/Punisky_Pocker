@@ -88,8 +88,8 @@ CREATE TABLE `TexasTable` (
 
 # Dump of table TexasSite 得克萨斯座位信息  #TODO
 # ------------------------------------------------------------
-DROP TABLE IF EXISTS `TexasSite`;
-CREATE TABLE `TexasSite` (
+DROP TABLE IF EXISTS `TexasSeat`;
+CREATE TABLE `TexasSeat` (
   `id` INT NOT NULL AUTO_INCREMENT COMMENT '房间id',
   `createTime` bigint(20) unsigned DEFAULT '0' COMMENT '生成时间',
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='得克萨斯的房间规则';

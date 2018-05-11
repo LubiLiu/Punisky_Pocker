@@ -64,6 +64,7 @@ app.configure('production|development', 'game', function () {
 // start app
 app.start();
 
+
 process.on('uncaughtException', function (err) {
   console.error(' Caught exception: ' + err.stack);
 });
