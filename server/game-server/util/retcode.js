@@ -15,5 +15,8 @@ module.exports = {
         PASSWORD_ERROR: 2007,
         TOKEN_ERROR: 2008,
         NEED_LOGIN: 2009,
+    },
+    ROOM: {
+        NOSUCH_ROOMTYPE: 3001,
     }
 };

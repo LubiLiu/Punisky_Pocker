@@ -59,14 +59,18 @@ CREATE TABLE `Room` (
   `creatorname` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '创建者名称',
   `timeout` bigint(20) unsigned DEFAULT 0 COMMENT '过期时间',
   `createTime` bigint(20) unsigned DEFAULT '0' COMMENT '生成时间',
+   PRIMARY KEY (`id`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='房间表';
 
 # Dump of table TexasRule 得克萨斯的房间规则  #TODO
 # ------------------------------------------------------------
 DROP TABLE IF EXISTS `TexasRule`;
 CREATE TABLE `TexasRule` (
-  `id` INT NOT NULL AUTO_INCREMENT COMMENT '房间id',
+  `id` INT NOT NULL COMMENT '房间id',
+  `bringIn` INT NOT NULL COMMENT '带入金额',
+  `minBet` INT NOT NULL COMMENT '最小下注',
   `createTime` bigint(20) unsigned DEFAULT '0' COMMENT '生成时间',
+   PRIMARY KEY (`id`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='得克萨斯的房间规则';
 
 # Dump of table TexasGamer 得克萨斯玩家信息  #TODO

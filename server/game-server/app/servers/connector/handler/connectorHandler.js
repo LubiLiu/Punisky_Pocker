@@ -1,8 +1,10 @@
 var Async = require('async');
 
+var Util = require('../../../../util/utils');
 var RetCode = require('../../../../util/retcode');
 
 var UserDao = require('../../../dao/userDao');
+var RoomDao = require('../../../dao/roomDao');
 
 module.exports = function (app) {
 	return new Handler(app);
@@ -87,6 +89,9 @@ Handler.prototype.createRoom = function (msg, session, next) {
 			//TODO 要做判断 钱够不够啦 vip够不够啦 
 			anext(null);
 		},
+		function (anext) {
+			//创建
+		}
 	], function (err, result) {
 		if (err) {
 			next(null, err);
@@ -100,3 +105,37 @@ Handler.prototype.createRoom = function (msg, session, next) {
 		}
 	});
 };
+
+Handler.prototype.findRoomByInvite = function (msg, session, next) {
+	if (session.user == null) {
+		//回去登录
+		next(null, { code: RetCode.USER.NEED_LOGIN, msg: '请重新登录' });
+		return;
+	}
+	let lostParams = Util.checkParams(msg, ['invitecode']);
+	if (lostParams.length > 0) {
+		next(null, { code: RetCode.INVALID_PARAM, msg: 'lost params : ' + Util.joinArray(lostParams) });
+		return;
+	}
+	Async.waterfall([
+		function (anext) {
+			RoomDao.findRoomByInviteCode(msg.invitecode, function (err, results) {
+				anext(err, results);
+			});
+		},
+		function (results, anext) {
+
+		}
+	], function (err, result) {
+		if (err) {
+			next(null, err);
+		} else {
+			if (retMsg != null) {
+				next(null, retMsg);
+			} else {
+				//可以创建
+				next(null, { code: RetCode.OK, msg: 'entry success' });
+			}
+		}
+	});
+}

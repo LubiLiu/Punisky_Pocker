@@ -1,5 +1,6 @@
 var Moment = require('moment');
 
+var RetCode = require('../../util/retcode');
 var Define = require('../../util/define');
 var Util = require('../../util/utils');
 
@@ -49,6 +50,7 @@ RoomManager.prototype.update = function () {
     }
     this.lastTick = now;
 }
+//==========================================================成员函数=============================================================
 /**
  * 创建房间
  * @param {Object} user 
@@ -73,12 +75,30 @@ RoomManager.prototype.createRoom = function (user, roomtype, name, rule, duratio
     switch (roomtype) {
         case Define.ROOM_TYPE.TEXAS:
             {
-                var room = TexasRoom.createTexasRoom(opts);
-                //存数据库了
-                
+                TexasRoom.createTexasRoom(opts, function (err, room) {
+                    if (err !== null) {
+                        Util.invokeCallback(cb, err);
+                    } else {
+                        this.rooms[room.baseRoom.id] = room;
+                        Util.invokeCallback(cb, null, room);
+                    }
+                }.bind(this));
             }
             break;
         default:
+            {
+                Util.invokeCallback(cb, { code: RetCode.ROOM.NOSUCH_ROOMTYPE, msg: '没有这个房间类型哦' }, null);
+            }
             break;
     }
+}
+
+/**
+ * 加入一个房间
+ * @param {Object} user 
+ * @param {Number} invitecode 
+ * @param {Function} cb 
+ */
+RoomManager.prototype.enterRoom = function (user, invitecode, cb) {
+
 }
