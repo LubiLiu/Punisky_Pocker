@@ -39,10 +39,7 @@ Handler.prototype.createRoom = function (msg, session, next) {
 		},
 		function (anext) {
 			//创建
-			app.rpc.game.hallRemote.createRoom(session.user.id, session.user, msg.roomtype, msg.name, msg.rule, msg.duration, function (result) {
-				if (result.code == RetCode.OK) {
-					// session.set
-				}
+			app.rpc.room.roomRemote.createRoom(session.user.id, session.user, msg.roomtype, msg.name, msg.rule, msg.duration, function (result) {
 				anext(null, result);
 			});
 		}
@@ -56,7 +53,7 @@ Handler.prototype.createRoom = function (msg, session, next) {
 };
 
 /**
- * 通过邀请码查找一个房间 可能会找到多个哦
+ * 通过邀请码查找一个房间 可能会找到多个哦 概率很小很小就是了
  * @param {Object} msg 
  * @param {Object} session 
  * @param {Function} next 
@@ -86,18 +83,43 @@ Handler.prototype.findRoomByInvite = function (msg, session, next) {
 		if (err) {
 			next(null, err);
 		} else {
-			if (retMsg != null) {
-				next(null, retMsg);
-			} else {
-				//可以创建
-				next(null, { code: RetCode.OK, msg: result });
-			}
+			next(null, { code: RetCode.OK, msg: result });
 		}
 	});
 }
 
 /**
- * 进入一个房间 通过房间的创建者会route到指定的gameserver
+ * 查找我创建的房间
+ * @param {Object} msg 
+ * @param {Object} session 
+ * @param {Function} next 
+ */
+Handler.prototype.findRoomByUser = function (msg, session, next) {
+	if (session.user == null) {
+		//回去登录
+		next(null, { code: RetCode.USER.NEED_LOGIN, msg: '请重新登录' });
+		return;
+	}
+	Async.waterfall([
+		function (anext) {
+			RoomDao.findRoomByCreatorId(session.user.id, function (err, results) {
+				anext(err, results);
+			});
+		},
+		function (results, anext) {
+			console.log(results);
+			anext(null, results);
+		}
+	], function (err, result) {
+		if (err) {
+			next(null, err);
+		} else {
+			next(null, { code: RetCode.OK, msg: result });
+		}
+	});
+}
+/**
+ * 进入一个房间
  * @param {Object} msg 
  * @param {Object} session 
  * @param {Object} next 

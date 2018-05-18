@@ -18,5 +18,6 @@ module.exports = {
     },
     ROOM: {
         NOSUCH_ROOMTYPE: 3001,
+        NO_USABLEROOMMGR: 3002,
     }
 };

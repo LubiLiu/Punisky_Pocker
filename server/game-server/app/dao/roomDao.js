@@ -27,6 +27,26 @@ RoomDao.findRoomByInviteCode = function (invitecode, cb) {
         }
     });
 }
+
+/**
+ * 
+ * @param {String} creatorid 
+ * @param {Function} cb 
+ */
+RoomDao.findRoomByCreatorId = function (creatorid, cb) {
+    //不要超时的房间
+    let now = Moment().unix();
+    let sql = Knex('room').select('*').from('room').where('creatorid', creatorid).andWhere('timeout', '>', now).toString();
+    console.log(sql);
+    pomelo.app.get('dbclient').query(sql, function (err, res) {
+        if (err) {
+            Utils.invokeCallback(cb, { code: RetCode.FAIL, error: err.message }, null);
+        } else {
+            console.log(res);
+            Utils.invokeCallback(cb, null, res);
+        }
+    });
+}
 //=============================================================  Create Function  =============================================================
 /**
  * 向数据库中写入房间信息

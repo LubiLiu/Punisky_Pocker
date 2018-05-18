@@ -24,21 +24,17 @@ var Handler = function (app) {
  * @param {Function} cb 
  */
 Handler.prototype.createRoom = function (user, roomtype, name, rule, duration, cb) {
-    //检查参数
-    if (!_.isObject(user)) {
-        return Util.invokeCallback(cb, { code: RetCode.INVALID_PARAM, msg: 'lost params: user ' });
-    }
-    if (!_.isNumber(roomtype)) {
-        return Util.invokeCallback(cb, { code: RetCode.INVALID_PARAM, msg: 'lost params: roomtype ' });
-    }
-    if (!_.isString(name)) {
-        return Util.invokeCallback(cb, { code: RetCode.INVALID_PARAM, msg: 'lost params: name ' });
-    }
-    if (!_.isObject(rule)) {
-        return Util.invokeCallback(cb, { code: RetCode.INVALID_PARAM, msg: 'lost params: rule ' });
-    }
-    if (!_.isNumber(duration)) {
-        return Util.invokeCallback(cb, { code: RetCode.INVALID_PARAM, msg: 'lost params: duration ' });
-    }
+    //由服务器远端调用过来，相信服务器的参数都是对的
     //
+    let roomMgr = this.app.components[Define.COMPONENT_KEY.ROOM_MANAGER];
+    if (null == roomMgr) {
+        return Util.invokeCallback(cb, { code: RetCode.ROOM.NO_USABLEROOMMGR, msg: '没有可用的房间管理器' });
+    }
+    roomMgr.createRoom(user, roomtype, name, rule, duration, function (err, result)){
+        if (err) {
+            return Util.invokeCallback(cb, err);
+        } else {
+            return Util.invokeCallback(cb, { code: RetCode.OK, msg: result });
+        }
+    }
 }

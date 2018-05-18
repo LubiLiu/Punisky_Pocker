@@ -1,6 +1,8 @@
 var pomelo = require('pomelo');
 var route = require('./app/route/index');
 
+var RoomManager = require('./app/components/roomManager');
+
 /**
  * Init app for client.
  */
@@ -31,12 +33,20 @@ app.configure('production|development', function () {
 });
 
 // Configure database
-app.configure('production|development', 'gate|connector|master', function () {
+app.configure('production|development', 'gate|connector|master|user|hall|room', function () {
   var dbclient = require('./app/dao/mysql/mysql').init(app);
   app.set('dbclient', dbclient);
 });
 
 // app configuration
+
+app.configure('production|development', 'gate', function () {
+  app.set('connectorConfig',
+    {
+      connector: pomelo.connectors.hybridconnector,
+      useProtobuf: true
+    });
+});
 app.configure('production|development', 'connector', function () {
   app.set('connectorConfig',
     {
@@ -47,7 +57,7 @@ app.configure('production|development', 'connector', function () {
     });
 });
 
-app.configure('production|development', 'gate', function () {
+app.configure('production|development', 'user', function () {
   app.set('connectorConfig',
     {
       connector: pomelo.connectors.hybridconnector,
@@ -55,9 +65,24 @@ app.configure('production|development', 'gate', function () {
     });
 });
 
-app.configure('production|development', 'game', function () {
 
-})
+app.configure('production|development', 'hall', function () {
+  app.set('connectorConfig',
+    {
+      connector: pomelo.connectors.hybridconnector,
+      useProtobuf: true
+    });
+});
+
+
+app.configure('production|development', 'room', function () {
+  app.set('connectorConfig',
+    {
+      connector: pomelo.connectors.hybridconnector,
+      useProtobuf: true
+    });
+  app.load(RoomManager, {});
+});
 
 // start app
 app.start();

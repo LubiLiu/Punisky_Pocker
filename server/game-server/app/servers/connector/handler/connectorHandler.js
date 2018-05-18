@@ -73,5 +73,5 @@ var onUserLeave = function (app, session, reason) {
 		return;
 	}
 	//通过rpc通知后端服务器玩家要下线了
-
+	//TODO
 }
