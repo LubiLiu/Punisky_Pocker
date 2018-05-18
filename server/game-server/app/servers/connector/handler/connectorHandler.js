@@ -4,7 +4,6 @@ var Util = require('../../../../util/utils');
 var RetCode = require('../../../../util/retcode');
 
 var UserDao = require('../../../dao/userDao');
-var RoomDao = require('../../../dao/roomDao');
 
 module.exports = function (app) {
 	return new Handler(app);
@@ -22,13 +21,13 @@ var Handler = function (app) {
  * @param  {Function} next    next step callback
  * @return {Void}
  */
-Handler.prototype.entry = function (msg, session, next) {
+Handler.prototype.enterGame = function (msg, session, next) {
 	let lostParams = Util.checkParams(msg, ['uid', 'token']);
 	if (lostParams.length > 0) {
 		next(null, { code: RetCode.INVALID_PARAM, msg: 'lost params : ' + Util.joinArray(lostParams) });
 		return;
 	}
-	let retMsg = null;
+	let retMsg = null, self = this;
 	Async.waterfall([
 		function (anext) {
 			//加载出这个玩家看看
@@ -51,7 +50,10 @@ Handler.prototype.entry = function (msg, session, next) {
 				return anext(null, user);
 			}
 			//都对了，那就个你连接。
-			session.user = user;
+			session.bind(user.id);
+			session.set('user', user);
+			session.on('closed', onUserLeave.bind(null, self.app));
+			session.pushAll(anext);
 		},
 	], function (err, result) {
 		if (err) {
@@ -66,76 +68,10 @@ Handler.prototype.entry = function (msg, session, next) {
 	});
 };
 
-/**
- * 创建一个房间
- * @param {Object} msg 
- * @param {Object} session 
- * @param {Function} next 
- */
-Handler.prototype.createRoom = function (msg, session, next) {
-	if (session.user == null) {
-		//回去登录
-		next(null, { code: RetCode.USER.NEED_LOGIN, msg: '请重新登录' });
+var onUserLeave = function (app, session, reason) {
+	if (!session || !session.uid) {
 		return;
 	}
-	let lostParams = Util.checkParams(msg, ['roomtype', 'name', 'rule', 'duration']);
-	if (lostParams.length > 0) {
-		next(null, { code: RetCode.INVALID_PARAM, msg: 'lost params : ' + Util.joinArray(lostParams) });
-		return;
-	}
-	let retMsg = null;
-	Async.waterfall([
-		function (anext) {
-			//TODO 要做判断 钱够不够啦 vip够不够啦 
-			anext(null);
-		},
-		function (anext) {
-			//创建
-		}
-	], function (err, result) {
-		if (err) {
-			next(null, err);
-		} else {
-			if (retMsg != null) {
-				next(null, retMsg);
-			} else {
-				//可以创建
-				next(null, { code: RetCode.OK, msg: 'entry success' });
-			}
-		}
-	});
-};
+	//通过rpc通知后端服务器玩家要下线了
 
-Handler.prototype.findRoomByInvite = function (msg, session, next) {
-	if (session.user == null) {
-		//回去登录
-		next(null, { code: RetCode.USER.NEED_LOGIN, msg: '请重新登录' });
-		return;
-	}
-	let lostParams = Util.checkParams(msg, ['invitecode']);
-	if (lostParams.length > 0) {
-		next(null, { code: RetCode.INVALID_PARAM, msg: 'lost params : ' + Util.joinArray(lostParams) });
-		return;
-	}
-	Async.waterfall([
-		function (anext) {
-			RoomDao.findRoomByInviteCode(msg.invitecode, function (err, results) {
-				anext(err, results);
-			});
-		},
-		function (results, anext) {
-
-		}
-	], function (err, result) {
-		if (err) {
-			next(null, err);
-		} else {
-			if (retMsg != null) {
-				next(null, retMsg);
-			} else {
-				//可以创建
-				next(null, { code: RetCode.OK, msg: 'entry success' });
-			}
-		}
-	});
 }

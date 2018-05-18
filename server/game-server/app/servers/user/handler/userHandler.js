@@ -10,9 +10,6 @@ var Token = require('../../../../util/token');
 var ValidationDao = require('../../../dao/validationDao');
 var UserDao = require('../../../dao/userDao');
 
-/**
- * Gate handler that dispatch user to connectors.
- */
 module.exports = function (app) {
     return new Handler(app);
 };

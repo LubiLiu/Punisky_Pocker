@@ -1,6 +1,6 @@
 module.exports = {
     SESSION_KEY: {
-        GAME_SERVERID: 'gameServerId'
+        ROOM_SERVERID: 'roomServerId'
     },
     COMPONENT_KEY: {
         ROOM_MANAGER: 'roomManager'

@@ -23,7 +23,7 @@ var Handler = function (app) {
  * @param {Number} duration 
  * @param {Function} cb 
  */
-Handler.prototype.sendValidation = function (user, roomtype, name, rule, duration, cb) {
+Handler.prototype.createRoom = function (user, roomtype, name, rule, duration, cb) {
     //检查参数
     if (!_.isObject(user)) {
         return Util.invokeCallback(cb, { code: RetCode.INVALID_PARAM, msg: 'lost params: user ' });

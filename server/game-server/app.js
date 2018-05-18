@@ -1,6 +1,5 @@
 var pomelo = require('pomelo');
-
-var routeUtil = require('./util/routeUtil');
+var route = require('./app/route/index');
 
 /**
  * Init app for client.
@@ -26,8 +25,7 @@ app.configure('production|development', function () {
   // });
 
   // route configures
-  app.route('game', routeUtil.game);
-
+  route(app);
   // app.loadConfig('mysql', app.getBase() + '/../shared/config/mysql.json');
   app.loadConfig('mysql', app.getBase() + '\\config\\mysql.json');
 });
