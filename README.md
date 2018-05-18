@@ -71,4 +71,4 @@
     1.接受第三方主动请求的http服务器，主流第三方支付都有主动请求的过程。
     2.用来统计和后台管理的backend服务器。
 
-![image][https://raw.githubusercontent.com/LubiLiu/Punisky_Pocker/master/res/PunishSky%E6%97%B6%E5%BA%8F%E5%9B%BE.png]
+![image][https://raw.githubusercontent.com/LubiLiu/Punisky_Pocker/master/res/PunishSky时序图.png]
